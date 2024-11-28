@@ -11,19 +11,20 @@ The website is userfriendly and clear.
 
 ## Authors
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+aznaveeck      https://github.com/aznaveeck
+sephley        https://github.com/Sephley
+ecogamezz      https://github.com/ecogamezz
+neon05         https://github.com/neon05
 
 ## Version History
 
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
+* 0.1.1
     * Initial Release
+    * Flask integration
+    * Flask setup
+    * Github setup
+    * update of server
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the Apache License 2.0 License - see the LICENSE.md file for details
