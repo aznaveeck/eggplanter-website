@@ -17,7 +17,9 @@ ecogamezz      https://github.com/ecogamezz
 neon05         https://github.com/neon05
 
 ## Version History
-
+* 0.1.2
+    * Website online
+    * Test Site by Neon05 published 
 * 0.1.1
     * Initial Release
     * Flask integration
