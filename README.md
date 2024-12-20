@@ -11,12 +11,19 @@ The website is userfriendly and clear.
 
 ## Authors
 
-aznaveeck      https://github.com/aznaveeck
-sephley        https://github.com/Sephley
-ecogamezz      https://github.com/ecogamezz
-neon05         https://github.com/neon05
+- [@aznaveeck](https://github.com/aznaveeck)
+- [@sephley](https://github.com/Sephley)
+- [@ecogamezz](https://github.com/ecogamezz)
+- [@neon05](https://github.com/neon05)
 
 ## Version History
+* 0.2.0
+    * New test site published
+    * Add static html dashboard
+    * Add sample data
+    * All credit goes to Neon05
+* 0.1.3
+    * New test site by Neon05 published
 * 0.1.2
     * Website online
     * Test Site by Neon05 published 
