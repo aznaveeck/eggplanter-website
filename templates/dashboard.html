@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            background-image: url("{{ url_for('static', filename='background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        nav {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        h1 {
+            margin: 2rem 0 1rem;
+        }
+        .charts-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .chart {
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+        .chart canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .chart-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+        .chart-title {
+            font-size: 1rem;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div>Dashboard</div>
+        <a href="/logout">Logout</a>
+    </nav>
+    <h1>Latest Sensor Data</h1>
+    <div class="charts-container">
+        {% if entries %}
+            {% set latest_entry = entries[-1] %}
+            <div class="chart-wrapper">
+                <div class="chart">
+                    <canvas id="temperature-chart"></canvas>
+                    <div class="chart-label">{{ latest_entry[0] }}</div>
+                </div>
+                <div class="chart-title">Temperature</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart">
+                    <canvas id="humidity-chart"></canvas>
+                    <div class="chart-label">{{ latest_entry[1] }}</div>
+                </div>
+                <div class="chart-title">Humidity</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart">
+                    <canvas id="water-chart"></canvas>
+                    <div class="chart-label">{{ latest_entry[2] }}</div>
+                </div>
+                <div class="chart-title">Water Level</div>
+            </div>
+            <div class="chart-wrapper">
+                <div class="chart">
+                    <canvas id="moisture-chart"></canvas>
+                    <div class="chart-label">{{ latest_entry[3] }}</div>
+                </div>
+                <div class="chart-title">Moisture</div>
+            </div>
+        {% else %}
+            <p>No data available</p>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const data = {
+            temperature: {{ latest_entry[0] | safe }},
+            humidity: {{ latest_entry[1] | safe }},
+            water: {{ latest_entry[2] | safe }},
+            moisture: {{ latest_entry[3] | safe }},
+        };
+        function createChart(ctx, value) {
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Value', 'Remaining'],
+                    datasets: [{
+                        data: [value, 100 - value],
+                        backgroundColor: ['#4CAF50', '#171717'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                    }
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            createChart(document.getElementById('temperature-chart').getContext('2d'), data.temperature);
+            createChart(document.getElementById('humidity-chart').getContext('2d'), data.humidity);
+            createChart(document.getElementById('water-chart').getContext('2d'), data.water);
+            createChart(document.getElementById('moisture-chart').getContext('2d'), data.moisture);
+        });
+    </script>
+</body>
+</html>

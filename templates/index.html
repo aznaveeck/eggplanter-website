@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EggPlanter</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle, #00fffb, #1c667f);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .title {
+            margin: 20px 0;
+            font-size: 32px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .action-button {
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #008cff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .action-button:hover {
+            background-color: #005faf;
+            transform: scale(1.05);
+        }
+
+        .main-container {
+            width: 90%;
+            max-width: 700px;
+            height: 600px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .circle {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 40%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .circle:hover {
+            transform: scale(1.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .circle:hover .hover-info {
+            opacity: 1;
+        }
+
+        .inner-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            position: absolute;
+            top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .inner-circle.pumpe-status-on {
+            background: #00ff00; /* Green for ON */
+        }
+
+        .inner-circle.pumpe-status-off {
+            background: #ff0000; /* Red for OFF */
+        }
+
+        .circle img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .circle-text {
+            position: absolute;
+            bottom: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #chart_div {
+            width: 70px;
+            height: 70px;
+        }
+
+        .hover-info {
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 14px;
+        }
+
+        .auftrag-button {
+            width: 150px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff9900, #ffcc00);
+            border-radius: 10%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .auftrag-button:hover {
+            transform: scale(1.05);
+        }
+
+        .auftrag-circle-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">EggPlanter Dashboard</div>
+
+    <button class="action-button" onclick="window.location.href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'">Jetzt Bewässern</button>
+
+    <div class="main-container">
+        
+        <!-- Circle 1: Wasserstatus -->
+        <div class="circle">
+            <div class="inner-circle">
+                <img src="placeholder_wasser.png" alt="Wasserstatus">
+            </div>
+            <div class="circle-text">Wassertankstatus</div>
+            <div class="hover-info">Der Wassertank ist voll.</div>
+        </div>
+
+        <!-- Circle 2: Pumpe -->
+        <div class="circle">
+            <div id="pump-status" class="inner-circle pumpe-status">
+                <!-- Background changes to green/red based on status -->
+            </div>
+            <div class="circle-text">Pumpe Läuft</div>
+            <div class="hover-info">Die Pumpe ist derzeit in Betrieb.</div>
+        </div>
+
+        <!-- Circle 3: Feuchtigkeit -->
+        <div class="circle">
+            <div class="inner-circle">
+                <div id="chart_div"></div>
+            </div>
+            <div class="circle-text">Feuchtigkeit</div>
+            <div class="hover-info">Aktuelle Bodenfeuchtigkeit: 65%.</div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        async function fetchPumpStatus() {
+            const response = await fetch('/pump_status'); // Endpoint to get pump status from Python backend
+            const data = await response.json();
+            const pumpCircle = document.getElementById('pump-status');
+
+            if (data.status === 'on') {
+                pumpCircle.classList.add('pumpe-status-on');
+                pumpCircle.classList.remove('pumpe-status-off');
+            } else {
+                pumpCircle.classList.add('pumpe-status-off');
+                pumpCircle.classList.remove('pumpe-status-on');
+            }
+        }
+
+        async function fetchMoistureLevel() {
+            const response = await fetch('/moisture_level'); // Endpoint to get moisture level from Python backend
+            const data = await response.json();
+
+            drawChart(data.level);
+        }
+
+        function drawChart(percentage) {
+            google.charts.load('current', { packages: ['corechart'] });
+            google.charts.setOnLoadCallback(() => {
+                const data = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['Feuchtigkeit', percentage]
+                ]);
+
+                const options = {
+                    pieHole: 0.4,
+                    pieStartAngle: -90,
+                    slices: {
+                        0: { color: '#66a6ff' },
+                        1: { color: '#f8f8f8' },
+                    },
+                    legend: 'none'
+                };
+
+                const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPumpStatus();
+            fetchMoistureLevel();
+        });
+    </script>
+</body>
+</html>
